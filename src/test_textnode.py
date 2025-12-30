@@ -2,7 +2,6 @@ import unittest
 
 from textnode import TextNode, TextType, text_node_to_html_node
 
-
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
         node = TextNode("This is a text node", TextType.BOLD)
@@ -28,8 +27,6 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("This is a text node", TextType.ITALIC, None)
         node2 = TextNode("This is a text node", TextType.ITALIC)
         self.assertEqual(node, node2)
-
-
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
     def test_text(self):
