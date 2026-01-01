@@ -23,7 +23,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                         continue
                     if i % 2 == 0:
                         new_list.append(TextNode(split_text[i], TextType.TEXT))
-                        print(new_list)
+                        # print(new_list)
                     else:
                         new_list.append(TextNode(split_text[i], text_type))
 
@@ -88,6 +88,24 @@ def split_nodes_image(old_nodes):
 
     return new_nodes
                 
+def text_to_textnodes(text):
+    initial = [TextNode(text, TextType.TEXT)]
+    aft_delimiter_bold = split_nodes_delimiter(initial, '**', TextType.BOLD)
+    aft_delimiter_italic = split_nodes_delimiter(aft_delimiter_bold, '_', TextType.ITALIC)
+    aft_delimiter_code = split_nodes_delimiter(aft_delimiter_italic, '`', TextType.CODE)
+
+    # print(f'after delimiter split: {aft_delimiter_code} \n')
+
+    aft_link = split_nodes_link(aft_delimiter_code)
+    # print(f'after link split: {aft_link}\n')
+    aft_image = split_nodes_image(aft_link)
+
+    return aft_image
+
+text = 'This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+result = text_to_textnodes(text)
+print(result, '\n')
+
 
 # node = TextNode("This is text with a **bolded** word and **another**", TextType.TEXT)
 # new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
@@ -118,7 +136,7 @@ def split_nodes_image(old_nodes):
 # print(new_nodes, "\n")
 
 # Test split_nodes_image
-print('TEST split nodes image')
+# print('TEST split nodes image')
 
 # node = TextNode(
 #     "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
@@ -127,9 +145,9 @@ print('TEST split nodes image')
 # new_nodes = split_nodes_image([node])
 # print(new_nodes)
 
-node = TextNode(
-    "![image](https://www.example.COM/IMAGE.PNG)",
-    TextType.TEXT,
-)
-new_nodes = split_nodes_image([node])
-print(new_nodes, "\n")
+# node = TextNode(
+#     "![image](https://www.example.COM/IMAGE.PNG)",
+#     TextType.TEXT,
+# )
+# new_nodes = split_nodes_image([node])
+# print(new_nodes, "\n")
