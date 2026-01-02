@@ -1,4 +1,41 @@
+from enum import Enum
 
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST = "ordered_list"
+
+def block_to_blocktype(block):
+    prefix = ('# ', '## ', '### ', '#### ', '##### ', '###### ')
+    if block.startswith(prefix):
+        return BlockType.HEADING
+    if block.startswith('```') and block.endswith('```'):
+        return BlockType.CODE
+    
+    quote_check = []
+    unordered_list_check = []
+    ordered_list_check = []
+    i = 1
+    for line in block.splitlines():
+        quote_check.append(line.startswith('> '))
+        unordered_list_check.append(line.startswith('- '))
+        # print(f'i: {i}')
+        ordered_list_check.append(line.startswith(str(i)+'.'))
+        i += 1
+
+    # print(f'ordered list check: {ordered_list_check}')
+
+    if all(quote_check):
+        return BlockType.QUOTE
+    if all(unordered_list_check):
+        return BlockType.UNORDERED_LIST
+    if all(ordered_list_check):
+        return BlockType.ORDERED_LIST
+    
+    return BlockType.PARAGRAPH
 
 def markdown_to_blocks(markdown):
     blocks = markdown.split('\n\n')
@@ -37,3 +74,11 @@ def markdown_to_blocks(markdown):
 
 # result = markdown_to_blocks(md)
 # print(result)
+
+## TEST
+# block = '# TITLE'
+# print(block_to_blocktype(block))
+
+# block = '1. This is a list\n2. with items'
+# print(block_to_blocktype(block))
+
