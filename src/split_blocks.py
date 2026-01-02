@@ -5,8 +5,8 @@ class BlockType(Enum):
     HEADING = "heading"
     CODE = "code"
     QUOTE = "quote"
-    UNORDERED_LIST = "unordered_list"
-    ORDERED_LIST = "ordered_list"
+    ULIST = "unordered_list"
+    OLIST = "ordered_list"
 
 def block_to_blocktype(block):
     prefix = ('# ', '## ', '### ', '#### ', '##### ', '###### ')
@@ -31,9 +31,9 @@ def block_to_blocktype(block):
     if all(quote_check):
         return BlockType.QUOTE
     if all(unordered_list_check):
-        return BlockType.UNORDERED_LIST
+        return BlockType.ULIST
     if all(ordered_list_check):
-        return BlockType.ORDERED_LIST
+        return BlockType.OLIST
     
     return BlockType.PARAGRAPH
 

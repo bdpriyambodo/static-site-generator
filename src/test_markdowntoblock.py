@@ -68,7 +68,7 @@ class TestBlockType(unittest.TestCase):
         result = block_to_blocktype(block)
         self.assertEqual(
              result, 
-             BlockType.UNORDERED_LIST
+             BlockType.ULIST
         )
 
      def test_orderedlist(self):
@@ -76,7 +76,7 @@ class TestBlockType(unittest.TestCase):
         result = block_to_blocktype(block)
         self.assertEqual(
              result, 
-             BlockType.ORDERED_LIST
+             BlockType.OLIST
         )      
 
      def test_quote(self):
@@ -94,6 +94,21 @@ class TestBlockType(unittest.TestCase):
              result, 
              BlockType.PARAGRAPH
         )
+
+     ## Additional:
+     def test_block_to_block_types(self):
+        block = "# heading"
+        self.assertEqual(block_to_blocktype(block), BlockType.HEADING)
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_blocktype(block), BlockType.CODE)
+        block = "> quote\n> more quote"
+        self.assertEqual(block_to_blocktype(block), BlockType.QUOTE)
+        block = "- list\n- items"
+        self.assertEqual(block_to_blocktype(block), BlockType.ULIST)
+        block = "1. list\n2. items"
+        self.assertEqual(block_to_blocktype(block), BlockType.OLIST)
+        block = "paragraph"
+        self.assertEqual(block_to_blocktype(block), BlockType.PARAGRAPH)
 
 if __name__ == "__main__":
     unittest.main()
