@@ -21,6 +21,26 @@ def text_to_children(text):
         htmlnodes.append(text_node_to_html_node(textnode))
     return htmlnodes
 
+def ulist_to_html_node(block):
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        text = item[2:]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ul", html_items)
+
+def olist_to_html_node(block):
+    items = block.split("\n")
+    html_items = []
+    for item in items:
+        parts = item.split(". ", 1)
+        text = parts[1]
+        children = text_to_children(text)
+        html_items.append(ParentNode("li", children))
+    return ParentNode("ol", html_items)
+
+
 def markdown_to_html_node(markdown):
     
     print(f'ORIGINAL MARKDOWN:\n{markdown}')
@@ -49,28 +69,34 @@ def markdown_to_html_node(markdown):
                 )
         if blocktype == BlockType.HEADING:
             if block.startswith('# '):
+                tidy_block = block.replace('# ','')
                 block_nodes.append(
-                    ParentNode(tag = "h1", children = text_to_children(block))
+                    ParentNode(tag = "h1", children = text_to_children(tidy_block))
                     )
             elif block.startswith('## '):
+                tidy_block = block.replace('## ','')
                 block_nodes.append(
-                    ParentNode(tag = "h2", children = text_to_children(block))
+                    ParentNode(tag = "h2", children = text_to_children(tidy_block))
                     )
             elif block.startswith('### '):
+                tidy_block = block.replace('### ','')
                 block_nodes.append(
-                    ParentNode(tag = "h3", children = text_to_children(block))
+                    ParentNode(tag = "h3", children = text_to_children(tidy_block))
                     )
             elif block.startswith('#### '):
+                tidy_block = block.replace('#### ','')
                 block_nodes.append(
-                    ParentNode(tag = "h4", children = text_to_children(block))
+                    ParentNode(tag = "h4", children = text_to_children(tidy_block))
                     )
             elif block.startswith('##### '):
+                tidy_block = block.replace('##### ','')
                 block_nodes.append(
-                    ParentNode(tag = "h5", children = text_to_children(block))
+                    ParentNode(tag = "h5", children = text_to_children(tidy_block))
                     )
             else:
+                tidy_block = block.replace('###### ','')
                 block_nodes.append(
-                    ParentNode(tag = "h6", children = text_to_children(block))
+                    ParentNode(tag = "h6", children = text_to_children(tidy_block))
                     )
         if blocktype == BlockType.CODE:
             tidy_block = block.replace('```\n','```').replace('```','')
@@ -81,17 +107,14 @@ def markdown_to_html_node(markdown):
                 ParentNode(tag = "pre", children = [codeblock_htmlnode])
                 )
         if blocktype == BlockType.QUOTE:
+            tidy_block = block.replace('> ','').replace('\n',' ')
             block_nodes.append(
-                ParentNode(tag = "blockquote", children = text_to_children(block))
+                ParentNode(tag = "blockquote", children = text_to_children(tidy_block))
                 )
         if blocktype == BlockType.ULIST:
-            block_nodes.append(
-                ParentNode(tag = "ul", children = text_to_children(block))
-                )
+            block_nodes.append(ulist_to_html_node(block))
         if blocktype == BlockType.OLIST:
-            block_nodes.append(
-                ParentNode(tag = "ol", children = text_to_children(block))
-                )
+            block_nodes.append(olist_to_html_node(block))
     print(f'AFTER BLOCK TYPE:\n{block_nodes}')
     
     all_nodes = ParentNode(tag = "div", children = block_nodes)
@@ -120,37 +143,54 @@ def markdown_to_html_node(markdown):
 # clear_screen()
 
 # # ACTUAL 
-md = """
-This is **bolded** paragraph
-text in a p
-tag here
+# md = """
+# This is **bolded** paragraph
+# text in a p
+# tag here
 
-This is another paragraph with _italic_ text and `code` here
+# This is another paragraph with _italic_ text and `code` here
+
+# """
+
+# result = markdown_to_html_node(md)
+# print('\n')
+# print(result)
+# print('\n')
+# print(result.to_html())
+# print('\n')
+
+# # CODE TEST
+# md = """
+# ```
+# This is text that _should_ remain
+# the **same** even with inline stuff
+# ```
+# """
+
+# # print(markdown_to_html_node(md))
+# result = markdown_to_html_node(md)
+# print('\nCODE BLOCK TEST')
+# print(result)
+# print('\n')
+# print(result.to_html())
+# print('\n')
+
+
+## TEST LIST
+md = """
+- This is a list
+- with items
+- and _more_ items
+
+1. This is an `ordered` list
+2. with items
+3. and more items
 
 """
-
-result = markdown_to_html_node(md)
-print('\n')
-print(result)
-print('\n')
-print(result.to_html())
-print('\n')
-
-# CODE TEST
-md = """
-```
-This is text that _should_ remain
-the **same** even with inline stuff
-```
-"""
-
 # print(markdown_to_html_node(md))
 result = markdown_to_html_node(md)
-print('\nCODE BLOCK TEST')
+print('\nLIST TEST')
 print(result)
 print('\n')
 print(result.to_html())
 print('\n')
-
-
-
