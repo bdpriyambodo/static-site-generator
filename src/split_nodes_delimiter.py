@@ -6,28 +6,19 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     for old_node in old_nodes:
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
-        else:
-            text = old_node.text
-            if (text.count(delimiter) % 2 != 0):
-                raise Exception('Invalid Markdown syntax')
+            continue
+        split_nodes = []
+        sections = old_node.text.split(delimiter)
+        if len(sections) % 2 == 0:
+            raise ValueError("invalid markdown, formatted section not closed")
+        for i in range(len(sections)):
+            if sections[i] == "":
+                continue
+            if i % 2 == 0:
+                split_nodes.append(TextNode(sections[i], TextType.TEXT))
             else:
-                new_list = []
-                split_text = text.split(delimiter)
-                # print(f'split_text: {split_text}')
-                # new_list.append(TextNode(split_text[0], TextType.TEXT))
-                # new_list.append(TextNode(split_text[1], text_type))
-                # new_list.append(TextNode(split_text[2], TextType.TEXT))
-
-                for i in range(len(split_text)):
-                    if split_text[i] == "":
-                        continue
-                    if i % 2 == 0:
-                        new_list.append(TextNode(split_text[i], TextType.TEXT))
-                        # print(new_list)
-                    else:
-                        new_list.append(TextNode(split_text[i], text_type))
-
-            new_nodes.extend(new_list)
+                split_nodes.append(TextNode(sections[i], text_type))
+        new_nodes.extend(split_nodes)
     return new_nodes
 
 def split_nodes_link(old_nodes):
@@ -36,28 +27,23 @@ def split_nodes_link(old_nodes):
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
             continue
-
-        text = old_node.text
-        matches = extract_markdown_links(text)
-
-        if len(matches) == 0:
-            new_nodes.append(TextNode(text, TextType.TEXT))
+        original_text = old_node.text
+        links = extract_markdown_links(original_text)
+        if len(links) == 0:
+            new_nodes.append(old_node)
             continue
-
-        new_list = []
-        for match in matches:
-            sections = text.split(f"[{match[0]}]({match[1]})",1)
+        for link in links:
+            sections = original_text.split(f"[{link[0]}]({link[1]})", 1)
             if len(sections) != 2:
-                raise ValueError('invalid markdown')
+                raise ValueError("invalid markdown, link section not closed")
             if sections[0] != "":
-                new_list.append(TextNode(sections[0],TextType.TEXT))
-            new_list.append(TextNode(match[0], TextType.LINK, match[1]))
-            text = sections[1]
-        if text != "":
-            new_list.append(TextNode(text, TextType.TEXT))
-        new_nodes.extend(new_list)
-
+                new_nodes.append(TextNode(sections[0], TextType.TEXT))
+            new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))
+            original_text = sections[1]
+        if original_text != "":
+            new_nodes.append(TextNode(original_text, TextType.TEXT))
     return new_nodes
+
 
 def split_nodes_image(old_nodes):
     new_nodes = []
@@ -102,9 +88,9 @@ def text_to_textnodes(text):
 
     return aft_image
 
-text = 'This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
-result = text_to_textnodes(text)
-print(result, '\n')
+# text = 'This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)'
+# result = text_to_textnodes(text)
+# print(result, '\n')
 
 
 # node = TextNode("This is text with a **bolded** word and **another**", TextType.TEXT)
