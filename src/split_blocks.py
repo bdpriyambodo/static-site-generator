@@ -20,12 +20,14 @@ def block_to_blocktype(block):
     ordered_list_check = []
     i = 1
     for line in block.splitlines():
-        quote_check.append(line.startswith('> '))
+        # print(f'{i}: {line}')
+        quote_check.append(line.startswith('>'))
         unordered_list_check.append(line.startswith('- '))
         # print(f'i: {i}')
         ordered_list_check.append(line.startswith(str(i)+'.'))
         i += 1
 
+    # print(f'quote check: {quote_check}')
     # print(f'ordered list check: {ordered_list_check}')
 
     if all(quote_check):

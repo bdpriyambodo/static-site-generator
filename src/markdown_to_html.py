@@ -43,7 +43,7 @@ def olist_to_html_node(block):
 
 def markdown_to_html_node(markdown):
     
-    print(f'ORIGINAL MARKDOWN:\n{markdown}')
+    # print(f'ORIGINAL MARKDOWN:\n{markdown}')
 
     # CONVERT MARKDOWN TO BLOCKS
     blocks = markdown_to_blocks(markdown)
@@ -100,14 +100,14 @@ def markdown_to_html_node(markdown):
                     )
         if blocktype == BlockType.CODE:
             tidy_block = block.replace('```\n','```').replace('```','')
-            print(f'tidy block: {tidy_block}')
+            # print(f'tidy block: {tidy_block}')
             codeblock_textnode = TextNode(tidy_block,TextType.CODE)
             codeblock_htmlnode = text_node_to_html_node(codeblock_textnode)
             block_nodes.append(
                 ParentNode(tag = "pre", children = [codeblock_htmlnode])
                 )
         if blocktype == BlockType.QUOTE:
-            tidy_block = block.replace('> ','').replace('\n',' ')
+            tidy_block = block.replace('> ','').replace('>','').replace('\n',' ')
             block_nodes.append(
                 ParentNode(tag = "blockquote", children = text_to_children(tidy_block))
                 )
@@ -115,6 +115,8 @@ def markdown_to_html_node(markdown):
             block_nodes.append(ulist_to_html_node(block))
         if blocktype == BlockType.OLIST:
             block_nodes.append(olist_to_html_node(block))
+
+    print(f'BLOCKTYPE: {block_types}')
     print(f'AFTER BLOCK TYPE:\n{block_nodes}')
     
     all_nodes = ParentNode(tag = "div", children = block_nodes)
@@ -138,59 +140,59 @@ def markdown_to_html_node(markdown):
     # create HTMLNode
 
 
+if __name__ == '__main__':
+    # CLEAR TERMINAL
+    # clear_screen()
 
-# CLEAR TERMINAL
-# clear_screen()
+    # # ACTUAL 
+    # md = """
+    # This is **bolded** paragraph
+    # text in a p
+    # tag here
 
-# # ACTUAL 
-# md = """
-# This is **bolded** paragraph
-# text in a p
-# tag here
+    # This is another paragraph with _italic_ text and `code` here
 
-# This is another paragraph with _italic_ text and `code` here
+    # """
 
-# """
+    # result = markdown_to_html_node(md)
+    # print('\n')
+    # print(result)
+    # print('\n')
+    # print(result.to_html())
+    # print('\n')
 
-# result = markdown_to_html_node(md)
-# print('\n')
-# print(result)
-# print('\n')
-# print(result.to_html())
-# print('\n')
+    # # CODE TEST
+    # md = """
+    # ```
+    # This is text that _should_ remain
+    # the **same** even with inline stuff
+    # ```
+    # """
 
-# # CODE TEST
-# md = """
-# ```
-# This is text that _should_ remain
-# the **same** even with inline stuff
-# ```
-# """
-
-# # print(markdown_to_html_node(md))
-# result = markdown_to_html_node(md)
-# print('\nCODE BLOCK TEST')
-# print(result)
-# print('\n')
-# print(result.to_html())
-# print('\n')
+    # # print(markdown_to_html_node(md))
+    # result = markdown_to_html_node(md)
+    # print('\nCODE BLOCK TEST')
+    # print(result)
+    # print('\n')
+    # print(result.to_html())
+    # print('\n')
 
 
-## TEST LIST
-md = """
-- This is a list
-- with items
-- and _more_ items
+    ## TEST LIST
+    md = """
+    - This is a list
+    - with items
+    - and _more_ items
 
-1. This is an `ordered` list
-2. with items
-3. and more items
+    1. This is an `ordered` list
+    2. with items
+    3. and more items
 
-"""
-# print(markdown_to_html_node(md))
-result = markdown_to_html_node(md)
-print('\nLIST TEST')
-print(result)
-print('\n')
-print(result.to_html())
-print('\n')
+    """
+    # print(markdown_to_html_node(md))
+    result = markdown_to_html_node(md)
+    print('\nLIST TEST')
+    print(result)
+    print('\n')
+    print(result.to_html())
+    print('\n')
