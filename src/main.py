@@ -2,7 +2,7 @@
 
 from textnode import TextType, TextNode
 from remove_and_copy import remove_and_copy
-from generate_page import generate_page
+from generate_page import generate_page, generate_pages_recursive
 
 def main():
     # test = TextNode('This is some anchor text', TextType.LINK, 'https://www.boot.dev')
@@ -10,7 +10,8 @@ def main():
 
     remove_and_copy("static","public")
 
-    generate_page('content/index.md','template.html','public/index.html')
+    # generate_page('content/index.md','template.html','public/index.html')
+    generate_pages_recursive('content','template.html','public')
 
 
 

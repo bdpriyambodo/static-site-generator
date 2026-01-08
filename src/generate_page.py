@@ -1,6 +1,15 @@
 import os
 from markdown_to_html import markdown_to_html_node, clear_screen
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from pathlib import Path
+
+def absolute_path(path):
+    if os.path.isabs(path):
+        abs_path = path
+    else:
+        abs_path = os.path.abspath(path)
+
+    return abs_path
 
 def extract_title(markdown):
     try:
@@ -46,8 +55,37 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, 'w') as file:
         file.write(edited_template)
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    
+    abs_dir_path_content = absolute_path(dir_path_content)
+    abs_template_path = absolute_path(template_path)
+    abs_dest_dir_path = absolute_path(dest_dir_path)
+
+    print(abs_dir_path_content)
+    print(abs_template_path)
+    print(abs_dest_dir_path)
+
+    contents = os.listdir(abs_dir_path_content)
+
+    for content in contents:
+        join_path_source = os.path.join(abs_dir_path_content, content)
+        join_path_destination = os.path.join(abs_dest_dir_path, content)
+        if os.path.isfile(join_path_source) and Path(join_path_source).suffix == '.md':
+            join_path_destination_html = Path(join_path_destination).with_suffix('.html')
+            generate_page(join_path_source, abs_template_path, join_path_destination_html)
+            print(f'{join_path_destination_html} is generated')
+        else:
+            os.mkdir(join_path_destination)
+            print(f'Directory {join_path_destination} is created\n')
+            generate_pages_recursive(join_path_source, template_path, join_path_destination)
+    
+
 
 if __name__ == '__main__':
     clear_screen()
-    title = extract_title("content/index.md")
-    print(title)
+    # title = extract_title("content/index.md")
+    # print(title)
+
+    generate_pages_recursive('content','template.html','public')
+
+    
