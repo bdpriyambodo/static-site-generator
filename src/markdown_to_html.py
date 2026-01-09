@@ -47,7 +47,7 @@ def markdown_to_html_node(markdown):
 
     # CONVERT MARKDOWN TO BLOCKS
     blocks = markdown_to_blocks(markdown)
-    print(f'AFTER MARKDOWN_TO_BLOCKS:\n{blocks}\n')
+    # print(f'AFTER MARKDOWN_TO_BLOCKS:\n{blocks}\n')
 
     # DETERMINE EACH BLOCK TYPE
     block_types = []
@@ -116,8 +116,8 @@ def markdown_to_html_node(markdown):
         if blocktype == BlockType.OLIST:
             block_nodes.append(olist_to_html_node(block))
 
-    print(f'BLOCKTYPE: {block_types}')
-    print(f'AFTER BLOCK TYPE:\n{block_nodes}')
+    # print(f'BLOCKTYPE: {block_types}')
+    # print(f'AFTER BLOCK TYPE:\n{block_nodes}')
     
     all_nodes = ParentNode(tag = "div", children = block_nodes)
 
